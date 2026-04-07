@@ -3,9 +3,9 @@ CREATE COMPUTE MODULE TestingVisa_Compute
 		
 CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-		DECLARE ev REFERENCE To Environment.Variables;
+		
 	    
-	    
+	  
 		
 		RETURN TRUE;	
 	END;
