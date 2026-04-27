@@ -1,0 +1,154 @@
+
+
+BROKER SCHEMA com.esb.iob
+
+DECLARE HOSTNAME EXTERNAL CHARACTER '';
+DECLARE PORT EXTERNAL CHARACTER '';
+
+CREATE COMPUTE MODULE Stoppayment_ProcessRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ev REFERENCE TO Environment.Variables;
+		SET ev.clientid = InputRoot.HTTPInputHeader.Clientid;
+		SET ev.Format = InputRoot.HTTPInputHeader."Content-Type";
+		SET ev.APINAME = ApplicationLabel;
+		SET OutputLocalEnvironment.Destination.File.Name = 'CBSConfigFile.txt';
+		PROPAGATE TO TERMINAL 'out1' FINALIZE NONE DELETE NONE;
+
+		SET ev.properties = THE (select * from ev.ESBConfig.XMLNSC.ESBConfig.Service.CBS.Interface[] AS R where R.API_NAME = ApplicationLabel);
+		-------Audit logging-------
+		SET Environment.ESB.ESBURL = InputRoot.HTTPInputHeader."X-Original-HTTP-Command";
+		SET Environment.ESB.HttpInputHeader = CAST(ASBITSTREAM(InputRoot.HTTPInputHeader) AS CHARACTER CCSID 1208 ENCODING 546);
+		CREATE FIELD Environment.AuditRecord;
+		CREATE FIELD Environment.DefaultRecord;
+		SET Environment.a= PASSTHRU('SELECT IOB_AUDIT_COR_ID.NEXTVAL FROM DUAL');
+		DECLARE a INTEGER FLOOR(Environment.a.NEXTVAL);
+		SET Environment.DefaultRecord.CorelationId = a;
+		SET Environment.AuditRecord.Request = InputRoot.BLOB.BLOB;
+		SET Environment.DefaultRecord.IntegrationNode = BrokerName;
+		SET Environment.DefaultRecord.IntegrationServer = ExecutionGroupLabel;
+		SET Environment.DefaultRecord.ApplicationName = ApplicationLabel;
+		SET Environment.DefaultRecord.FlowName = MessageFlowLabel;
+		SET Environment.AuditRecord.ESBURL = Environment.ESB.ESBURL;
+		SET Environment.AuditRecord.Loglevel ='Information';
+		SET Environment.AuditRecord.Requestheader = Environment.ESB.HttpInputHeader;
+		SET Environment.DefaultRecord.Logtype='Request';
+		PROPAGATE TO TERMINAL 'out2' FINALIZE NONE DELETE NONE;
+
+
+		CREATE LASTCHILD OF ev.request DOMAIN 'JSON' PARSE(InputRoot.BLOB.BLOB);
+		SET ev.currenttime = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMddHHmmss');
+		SET ev.sessionid = ev.request.JSON.Data.SessionId;
+		SET ev.requestid = ev.request.JSON.Data.RequestId;
+		SET ev.otptime = PASSTHRU('SELECT * from SRV_SESSION.UAT_STOP_PAYMENT_SESSION WHERE REQUESTID = ? AND SESSIONID = ?' TO Database.ORASESSIONUAT values(ev.requestid, ev.sessionid));
+		COMMIT;
+		DECLARE OTPEXPIRETIME CHARACTER ev.otptime.OTPEXPIRETIME;
+		DECLARE SESSIONEXPIRETIME CHARACTER ev.otptime.SESSIONEXPIRETIME;
+		DECLARE SESSIONID CHARACTER ev.otptime.SESSIONID;
+		DECLARE OTP_STATUS CHARACTER ev.otptime.OTP_STATUS;
+
+		DECLARE MASKACCID CHARACTER SUBSTRING(ev.otptime.ACCOUNTID FROM 0 FOR 12);
+		DECLARE accountnumber CHARACTER SUBSTRING(ev.request.JSON.Data.accountnumber FROM 0 FOR 12);
+
+		IF EXISTS(ev.otptime[]) THEN
+			IF ev.currenttime < SESSIONEXPIRETIME THEN
+				IF ev.userdetails.FIELD_VALUE = 'Y' THEN
+					SET ev.isodata = 'true';
+				ELSEIF OTP_STATUS = 'S' THEN
+					SET ev.isodata = 'true';
+				ELSE
+					SET OutputRoot.JSON.Data.response.status = 'Failure';
+					SET OutputRoot.JSON.Data.response.description = 'Account Aunthentication Failed';
+					UPDATE Database.ORASESSIONUAT.SRV_SESSION.UAT_STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid AND II.sessionid = ev.sessionid;
+					COMMIT;
+					PROPAGATE TO TERMINAL 'out3' FINALIZE NONE DELETE NONE;
+					RETURN FALSE;
+				END IF;
+			ELSE
+				SET OutputRoot.JSON.Data.response.status = 'Failure';
+				SET OutputRoot.JSON.Data.response.description = 'Session Expired';
+				UPDATE Database.ORASESSIONUAT.SRV_SESSION.UAT_STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid AND II.sessionid = ev.sessionid;
+				COMMIT;
+				PROPAGATE TO TERMINAL 'out3' FINALIZE NONE DELETE NONE;
+				RETURN FALSE;
+			END IF;
+		ELSE
+			SET OutputRoot.JSON.Data.response.status = 'Failure';
+			SET OutputRoot.JSON.Data.response.description = 'Unable to find valid session';
+			UPDATE Database.ORASESSIONUAT.SRV_SESSION.UAT_STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid AND II.sessionid = ev.sessionid;
+			COMMIT;
+			PROPAGATE TO TERMINAL 'out3' FINALIZE NONE DELETE NONE;
+			RETURN FALSE;
+		END IF;
+
+		IF ev.isodata = 'true' THEN
+			IF accountnumber = MASKACCID THEN
+				DECLARE ns NAMESPACE 'http://www.ibm.com/dfdl/ISO8583-1993';
+				CREATE LASTCHILD OF OutputRoot DOMAIN 'XMLNSC';
+				CREATE FIELD OutputRoot.XMLNSC.ns:ISO8583_1993;
+				DECLARE OutRef REFERENCE TO OutputRoot.XMLNSC.ns:ISO8583_1993;
+				DECLARE chequeno,stanno,reason CHARACTER;
+
+				SET chequeno = ev.request.JSON.Data.chequeno;
+				SET stanno = ev.request.JSON.Data.stanNo;
+				SET reason = ev.request.JSON.Data.Reason;
+
+				DECLARE branchcode CHARACTER ev.otptime.BRANCHCODE;
+
+				SET OutRef.Length='0175';
+				SET OutRef.MTI_Version = '1';
+				SET OutRef.MTI_MessageClass = '2';
+				SET OutRef.MTI_MessageFunction = '0';
+				SET OutRef.MTI_MessageOrigin = '0';
+				SET OutRef.PrimaryAccountNumber_002 = '3000000000000000001';
+				SET OutRef.ProcessingCode_003 ='950000';
+				-- SET OutRef.SystemsTraceAuditNumber_011 = '222240408282';
+				SET OutRef.SystemsTraceAuditNumber_011 = stanno;
+				SET OutRef.DateTimeLocalTransaction_012 = '20220812151919';
+				-- SET OutRef.DateTimeLocalTransaction_012 = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMddHHmmss');
+				SET OutRef.DateCapture_017 = '20220812';
+				-- SET OutRef.DateCapture_017 = CAST(CURRENT_DATE AS CHARACTER FORMAT 'yyyyMMdd');
+				SET OutRef.FunctionCode_024 = '200';
+				SET OutRef.AcquiringInstitutionIdentificationCode_032 = '422132';
+				SET OutRef.RetrievalReferenceNumber_037 = stanno ;
+				-- SET OutRef.RetrievalReferenceNumber_037 = '222240408282';
+				SET OutRef.CurrencyCodeTransaction_049 = 'INR';
+				SET OutRef.ReservedForPrivateUse_062 = '          '||chequeno||'001 '||reason;
+				SET OutRef.AccountIdentification1_102 = '027        '||branchcode||'    '||'154801000053219';
+				-- SET OutRef.ReservedForPrivateUse_062 = '          641101001 002';
+				-- SET OutRef.AccountIdentification1_102 = '027        1548    154801000053219';
+				SET OutRef.ReservedForPrivateUse_123 = 'ITB';
+			ELSE
+				SET OutputRoot.JSON.Data.code = 'ESB-ERR-112';
+				SET OutputRoot.JSON.Data.status = 'Failure';
+				SET OutputRoot.JSON.Data.desc = 'Invalid Account Number';
+				UPDATE Database.ORASESSIONUAT.SRV_SESSION.UAT_STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid AND II.sessionid = ev.sessionid;
+				COMMIT;
+				PROPAGATE TO TERMINAL 'out3' FINALIZE NONE DELETE NONE;
+				RETURN FALSE;
+			END IF;
+		ELSE
+			SET OutputRoot.JSON.Data.code = 'ESB-ERR-113';
+			SET OutputRoot.JSON.Data.status = 'Failure';
+			SET OutputRoot.JSON.Data.RequestId = ev.requestid;
+			SET OutputRoot.JSON.Data.SessionId = ev.sessionid;
+			SET OutputRoot.JSON.Data.desc = 'Account Aunthentication Failed';
+			UPDATE Database.ORASESSIONUAT.SRV_SESSION.UAT_STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid AND II.sessionid = ev.sessionid;
+			COMMIT;
+			PROPAGATE TO TERMINAL 'out3' FINALIZE NONE DELETE NONE;
+			RETURN FALSE;
+		END IF;
+		-----logging backendrequest
+		SET Environment.DefaultRecord.ErrorLogFlag = ev.properties.ERRORLOG;
+		DECLARE backendreqblob BLOB ASBITSTREAM(OutputRoot.XMLNSC CCSID 1208 ENCODING 546);
+		SET Environment.AuditRecord.BackendReq = CAST(backendreqblob AS CHARACTER CCSID 1208 ENCODING 546);
+		SET Environment.AuditRecord.Request = '-';
+		SET Environment.DefaultRecord.Logtype = 'backendrequest';
+		SET Environment.AuditRecord.Requestheader = '-';
+		SET Environment.AuditRecord.BackendURL = OutputLocalEnvironment.Destination.HTTP.RequestURL;
+		PROPAGATE TO TERMINAL 'out2' FINALIZE NONE DELETE NONE;
+
+
+		RETURN TRUE;
+	END;
+END MODULE;

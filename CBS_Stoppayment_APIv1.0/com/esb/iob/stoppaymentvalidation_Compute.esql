@@ -1,0 +1,31 @@
+BROKER SCHEMA com.esb.iob
+
+CREATE COMPUTE MODULE stoppaymentvalidation_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN		
+		DECLARE ev REFERENCE TO Environment.Variables;				
+		SET ev.clientid = InputRoot.HTTPInputHeader.Clientid;
+		SET ev.Format = InputRoot.HTTPInputHeader."Content-Type";
+		SET ev.APINAME = ApplicationLabel;
+	
+		CREATE FIELD ev.requestid;
+		CREATE FIELD ev.sessionid;
+		SET OutputLocalEnvironment.Destination.File.Name = 'CBSConfigFile.txt';
+		PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+		SET ev.properties = THE (SELECT * from ev.ESBConfig.XMLNSC.ESBConfig.Service.CBS.Interface[] AS R WHERE R.API_NAME = ApplicationLabel);		
+		
+		CREATE LASTCHILD OF ev.PrimaryReq DOMAIN 'JSON' PARSE(InputRoot.BLOB.BLOB);
+		SET ev.tablename = 'UAT_STOP_PAYMENT_SESSION';
+		SET ev.accountid = ev.PrimaryReq.JSON.Data.AcctId;
+		SET ev.requestId = ev.PrimaryReq.JSON.Data.RequestId;
+		SET ev.sessionId = REPLACE(UUIDASCHAR,'-','');
+		SET ev.sessionvalidtime = CAST(CURRENT_TIMESTAMP + CAST(10 AS INTERVAL MINUTE) AS CHARACTER FORMAT 'yyyyMMddHHmmss');
+		SET ev.maskaccnumber = SUBSTRING(ev.accountid FROM 0 FOR 12)||'XXXX' ;
+		 SET ev.userdetails = PASSTHRU('SELECT * from SRV_FRMWRK.UAT_USER_DATA_IMPLICITMAP WHERE API_NAME=? AND IOB_CLIENT_ID=?' TO Database.ORASECFWUAT values(ev.APINAME, ev.clientid));
+         PASSTHRU('Insert into SRV_SESSION.UAT_STOP_PAYMENT_SESSION (REQUESTID, SESSIONID, SESSIONEXPIRETIME, ACCOUNTID) values(?, ?, ?, ?)',ev.requestId, ev.sessionId, ev.sessionvalidtime,ev.maskaccnumber);		
+		COMMIT;
+		PROPAGATE TO Terminal 'out1' FINALIZE NONE DELETE NONE;		
+		RETURN FALSE;
+	END;
+
+END MODULE;
