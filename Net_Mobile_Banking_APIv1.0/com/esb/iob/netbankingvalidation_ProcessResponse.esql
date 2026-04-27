@@ -1,0 +1,28 @@
+BROKER SCHEMA com.esb.iob
+
+
+CREATE COMPUTE MODULE netbankingvalidation_ProcessResponse
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ev REFERENCE TO Environment.Variables;
+		IF ev.cifresstatus = 'SUCCESS' AND ev.mobilevalidation = 'SUCCESS' THEN
+			 SET OutputRoot.JSON.Data.RequestId = ev.requestId;
+			 SET OutputRoot.JSON.Data.SessionId = ev.sessionId;
+			 SET OutputRoot.JSON.Data.Status = 'Status';
+			 SET OutputRoot.JSON.Data.Statuscode = 'ESB-P2-100';
+			 SET OutputRoot.JSON.Data.Description = 'Account Validation Success - Valid Account, OTP Sent Succesfully';
+		UPDATE Database.SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION AS II SET TRN_STATUS = 'P' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+		COMMIT;
+		ELSE
+			 SET OutputRoot.JSON.Data.RequestId = ev.requestId;
+			 SET OutputRoot.JSON.Data.SessionId = ev.sessionId;
+			 SET OutputRoot.JSON.Data.Status = 'Failure';
+			 SET OutputRoot.JSON.Data.Statuscode = 'ESB-P2-101';
+			 SET OutputRoot.JSON.Data.Description = 'Account Validation Failure - Invalid Account';
+			UPDATE Database.SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+				COMMIT;			 
+		END IF;
+	
+		RETURN TRUE;
+	END;
+END MODULE;

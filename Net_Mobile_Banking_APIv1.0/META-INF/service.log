@@ -1,0 +1,66 @@
+
+==============================================
+
+!Mon Jul 03 20:02:40 IST 2023
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation.msgflow to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebankingvalidation.msgflow to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blocknetbanking.msgflow to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking.msgflow to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\NetBanking_Validation.msgflow to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking.msgflow to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Block_NetBanking.msgflow to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Block_Mobile_Number_Compute.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Block_Mobile_Number_Compute.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Compute1.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Compute2.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Compute2.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Mainflow_Compute.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_validation_Compute.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_validation_Compute1.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\application.descriptor to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\application.descriptor to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\application.descriptor to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\application.descriptor to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessRequest.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessRequest.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessRequest.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessResponse.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessResponse.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blocknetbanking_ProcessRequest.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blocknetbanking_ProcessRequest.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebanking_ProcessRequest.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebanking_ProcessResponse.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation_ProcessRequest.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation_ProcessResponse.esql to BAR file.
+
+Successfully added file Net_Mobile_Banking_APIv1.0\otphashing.jar to BAR file.

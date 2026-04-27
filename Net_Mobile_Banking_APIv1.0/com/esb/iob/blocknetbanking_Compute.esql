@@ -1,0 +1,16 @@
+BROKER SCHEMA com.esb.iob
+
+
+CREATE COMPUTE MODULE blocknetbanking_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		 CALL CopyEntireMessage();
+		 DECLARE ev REFERENCE TO Environment.variables;
+		 UPDATE Database.SRV_SESSION.NET_MOBILE_BANKING_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId; 
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

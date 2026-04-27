@@ -1,0 +1,85 @@
+DECLARE NS1 NAMESPACE 'http://www.finacle.com/fixml';
+DECLARE env NAMESPACE 'http://schemas.xmlsoap.org/soap/envelope/';
+DECLARE web NAMESPACE 'http://webservice.fiusb.ci.infosys.com/';
+
+CREATE COMPUTE MODULE Mobile_validation_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--DECLARE value CHARACTER;
+		DECLARE ev REFERENCE TO Environment.variables;				
+		SET ev.clientid = InputRoot.HTTPInputHeader.Clientid;
+		
+		SET OutputLocalEnvironment.Destination.File.Name = 'retrievetoken.txt';
+		PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+		
+		
+		CREATE FIELD ev.requestid;
+		CREATE FIELD ev.sessionid;
+		SET OutputLocalEnvironment.Destination.File.Name = 'ReadConfigFile.txt';
+		PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+		SET ev.properties = THE (SELECT * from ev.ESBConfig.XMLNSC.ESBConfig.Service.Interface[] AS R WHERE R.API_NAME = ApplicationLabel);		
+		
+		CREATE LASTCHILD OF ev.PrimaryReq DOMAIN 'JSON' PARSE(InputRoot.BLOB.BLOB);
+		SET ev.tablename = 'login_table';
+		SET ev.login_id = ev.PrimaryReq.JSON.Data.login_id;
+		SET ev.customer_id = ev.PrimaryReq.JSON.Data.customer_id;
+		SET ev.requestId = ev.PrimaryReq.JSON.Data.RequestId;
+		SET ev.flag=ev.PrimaryReq.JSON.Data.Flag;
+		SET ev.Block_reason = ev.PrimaryReq.JSON.Data.Block_reason;
+		SET ev.Blocked_by = ev.PrimaryReq.JSON.Data.Blocked_by;
+		SET ev.ChannelId = ev.PrimaryReq.JSON.Data.ChannelId;
+		
+		SET ev.requestId = ev.PrimaryReq.JSON.Data.RequestUUID;
+		SET ev.sessionId = REPLACE(UUIDASCHAR,'-','');
+		SET ev.sessionvalidtime = CAST(CURRENT_TIMESTAMP + CAST(10 AS INTERVAL MINUTE) AS CHARACTER FORMAT 'yyyyMMddHHmmss');
+		SET ev.maskaccnumber = SUBSTRING(ev.accountid FROM 0 FOR 12)||'XXXX' ;
+	IF InputRoot.JSON.Data.login_id=ev.login_id THEN
+		 SET ev.login_idcount[]=PASSTHRU('select count(*) from NETIOB.login_table where login_id=?',ev.login_id);
+		 
+		 	
+	ELSEIF InputRoot.JSON.Data.customer_id=ev.customer_id THEN
+		SET ev.customer_idcount=PASSTHRU('select count(*) from NETIOB.login_table where login_id=?',ev.login_id);	
+		
+	ELSE
+		SET OutputRoot.JSON.Data.Status='Check the input data';
+		END IF;
+		IF ev.login_idcount>1 THEN
+			SET ev.val[]=PASSTHRU('Select customer_id from NETIOB.login_table where login_id=?',ev.login_id);
+			SET OutputRoot.JSON.Data.customerid=ev.val.customerid;
+			PROPAGATE TO Terminal 'out1' FINALIZE NONE DELETE NONE;	
+		ELSEIF ev.customer_idcount>1 THEN
+			SET OutputRoot.JSON.Data.customerid=ev.customer_id;
+			PROPAGATE TO Terminal 'out1' FINALIZE NONE DELETE NONE;	
+		END IF;	
+			
+		
+		SET ev.rtoken = THE (SELECT R.channelid,R.token,R.status from ev.TokenFile.XMLNSC.cbs.user[] AS R WHERE R.channelid = 'ESB');
+		IF ev.TokenFile.XMLNSC.cbs.user.status = 0 THEN
+			SET ev.BackReqXML.XMLNSC.NS1:FIXML.NS1:Header.NS1:RequestHeader.NS1:MessageKey.NS1:AccessToken = ev.rtoken.token;
+			DECLARE blobInputMsg BLOB ASBITSTREAM(ev.BackReqXML.XMLNSC);
+			DECLARE charInputMsg CHARACTER CAST(blobInputMsg AS CHARACTER CCSID 1208 ENCODING 546);
+			SET OutputRoot.XMLNSC.env:Envelope.(XMLNSC.NamespaceDecl)xmlns:soapenv =env;
+			SET OutputRoot.XMLNSC.env:Envelope.(XMLNSC.NamespaceDecl)xmlns:web =web;
+			SET OutputRoot.XMLNSC.env:Envelope.env:Body.web:executeService.arg0=charInputMsg;
+
+			SET OutputLocalEnvironment.Destination.HTTP.RequestLine.Method = ev.properties.BACKENDREQMETHOD;
+			SET OutputLocalEnvironment.Destination.HTTP.SSLProtocol = 'TLSv1.2';
+			SET OutputLocalEnvironment.Destination.HTTP.RequestURL = ev.properties.BACKENDREQURL1;
+			PROPAGATE TO TERMINAL 'out2' FINALIZE NONE DELETE NONE;
+			RETURN FALSE;
+		ELSE
+			SET OutputRoot.JSON.Data.errorresponse.status = 'Failure';
+			SET OutputRoot.JSON.Data.errorresponse.Description = 'Token Not Found';
+			PROPAGATE TO TERMINAL 'out3' FINALIZE NONE DELETE NONE;
+	--		UPDATE Database.ORASESSION.SRV_SESSION.{ev.tablename} AS II SET ACC_STATUS = 'F' , TRN_STATUS = 'F'  WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+	--		COMMIT;
+			RETURN FALSE;
+		END IF;
+	END;
+		
+		
+		
+		
+		
+		
+END MODULE;

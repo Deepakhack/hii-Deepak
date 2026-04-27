@@ -1,0 +1,34 @@
+
+
+CREATE COMPUTE MODULE Mobile_validation_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ev REFERENCE TO Environment.variables;
+		
+	
+		IF  ev.accresstatus= 'SUCCESS' AND ev.cifresstatus = 'SUCCESS' AND ev.mobilevalidation = 'SUCCESS' THEN
+			 SET OutputRoot.JSON.Data.Response.RequestId = ev.requestId;
+			 SET OutputRoot.JSON.Data.Response.SessionId = ev.sessionId;
+			-- SET OutputRoot.JSON.Data.Response.SessionId = ev.otp;
+			 
+			 SET OutputRoot.JSON.Data.Response.Status = 'Status';
+			 SET OutputRoot.JSON.Data.Response.Statuscode = 'ESB-P2-100';
+			 SET OutputRoot.JSON.Data.Response.Description = 'Account Validation Success - Valid Account, OTP Sent Succesfully';
+		UPDATE Database.ORASESSION.SRV_SESSION.NET_Mobile_Banking_Session AS II SET TRN_STATUS = 'P', BRANCHCODE = ev.branchcode WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+		COMMIT;
+		ELSE
+			 SET OutputRoot.JSON.Data.Response.RequestId = ev.requestId;
+			 SET OutputRoot.JSON.Data.Response.SessionId = ev.sessionID;
+			 SET OutputRoot.JSON.Data.Response.Status = 'Failure';
+			 SET OutputRoot.JSON.Data.Response.Statuscode = 'ESB-P2-101';
+			 SET OutputRoot.JSON.Data.Response.Description = 'Account Validation Failure - Invalid Account';
+			UPDATE Database.ORASESSION.SRV_SESSION.NET_Mobile_Banking_Session AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+						 
+		END IF;
+		
+		
+		
+		
+		RETURN TRUE;
+	END;
+END MODULE;

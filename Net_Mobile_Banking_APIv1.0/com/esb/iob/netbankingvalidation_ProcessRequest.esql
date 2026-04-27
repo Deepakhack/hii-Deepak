@@ -1,0 +1,73 @@
+BROKER SCHEMA com.esb.iob
+
+
+DECLARE NS1 NAMESPACE 'http://www.finacle.com/fixml';
+DECLARE env NAMESPACE 'http://schemas.xmlsoap.org/soap/envelope/';
+DECLARE web NAMESPACE 'http://webservice.fiusb.ci.infosys.com/';
+
+
+CREATE COMPUTE MODULE netbankingvalidation_ProcessRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE ev REFERENCE TO Environment.Variables;				
+		SET ev.clientid = InputRoot.HTTPInputHeader.Clientid;
+		SET ev.Format = InputRoot.HTTPInputHeader."Content-Type";
+		SET ev.APINAME = ApplicationLabel;
+		SET ev.userdetails = PASSTHRU('SELECT FIELD_VALUE from SRV_FRMWRK.UAT_USER_DATA_IMPLICITMAP WHERE API_NAME=? AND IOB_CLIENT_ID=? AND FIELD_NAME = ? ' TO Database.ORASECFWUAT values(ev.APINAME, ev.clientid, 'OTP'));
+		IF ev.userdetails.FIELD_VALUE = 'Y' THEN
+			SET OutputRoot.JSON.Data.status = 'Success';
+			SET OutputRoot.JSON.Data.Description = 'OTP Validation is not requeired';
+			PROPAGATE TO Terminal 'out4' FINALIZE NONE DELETE NONE;
+			
+		ELSE
+			SET OutputLocalEnvironment.Destination.File.Name = 'ReadConfigFile.txt';
+		PROPAGATE TO TERMINAL 'out1' FINALIZE NONE DELETE NONE;
+		
+		SET OutputLocalEnvironment.Destination.File.Name = 'retrievetoken.txt';
+		PROPAGATE TO TERMINAL 'out3' FINALIZE NONE DELETE NONE;
+		
+      
+		SET ev.properties = THE (SELECT * from ev.ESBConfig.XMLNSC.ESBConfig.Service.Interface[] AS R WHERE R.API_NAME = ApplicationLabel);		
+		
+		CREATE LASTCHILD OF ev.PrimaryReq DOMAIN('JSON') PARSE(InputRoot.BLOB.BLOB);
+		SET ev.tablename = 'UAT_NET_MOBILE_BANKING_SESSION';
+		SET ev.login_id = ev.PrimaryReq.JSON.Data.login_id;
+		SET ev.customerid = ev.PrimaryReq.JSON.Data.customer_id;
+		SET ev.requestId = ev.PrimaryReq.JSON.Data.RequestId;
+		SET ev.flag=ev.PrimaryReq.JSON.Data.Flag;
+		SET ev.Blockreason = ev.PrimaryReq.JSON.Data.Block_reason;
+		SET ev.Blocked_by = ev.PrimaryReq.JSON.Data.Blocked_by;
+		SET ev.ChannelId = ev.PrimaryReq.JSON.Data.ChannelId;
+		
+		SET ev.sessionId = REPLACE(UUIDASCHAR,'-','');
+	
+	SET ev.sessionvalidtime = CAST(CURRENT_TIMESTAMP + CAST(10 AS INTERVAL MINUTE) AS CHARACTER FORMAT 'yyyyMMddHHmmss');
+	IF EXISTS(ev.PrimaryReq.JSON.Data.login_id[]) THEN
+		 SET ev.login_idcount=PASSTHRU('select count(*) from NETIOB.login_table where login_id=?' TO Database.NETBANKING values(ev.login_id));	
+		 SET ev.count=  ev.login_idcount."COUNT(*)";
+	ELSE
+		SET ev.customer_idcount=PASSTHRU('select count(*) from NETIOB.login_table where CUSTOMER_ID =?' TO Database.NETBANKING values(ev.customerid));	
+		SET ev.count=  ev.customer_idcount."COUNT(*)";
+	END IF;
+		IF ev.count>=1 AND EXISTS(ev.login_idcount[])  THEN
+			SET ev.val=PASSTHRU('Select CUSTOMER_ID from NETIOB.login_table where login_id=?' TO Database.NETBANKING values(ev.login_id));
+			SET ev.customerid =ev.val.CUSTOMER_ID;
+			PASSTHRU('Insert into SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION(REQUESTID, SESSIONID, SESSIONEXPIRETIME, LOGINID, BLOCKSTATUS, BLOCKREASON) values(?, ?, ?, ?, ?, ?)',ev.requestId, ev.sessionId, ev.sessionvalidtime, ev.login_id, ev.flag, ev.Blockreason);		
+			COMMIT;
+		ELSEIF ev.count>=1 AND EXISTS(ev.customer_idcount[]) THEN
+			SET ev.val=PASSTHRU('Select CUSTOMER_ID from NETIOB.login_table where CUSTOMER_ID=?' TO Database.NETBANKING values(ev.customerid));
+			SET ev.customerid =ev.val.CUSTOMER_ID;
+			PASSTHRU('Insert into SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION(REQUESTID, SESSIONID, SESSIONEXPIRETIME, CUSTOMERID, BLOCKSTATUS, BLOCKREASON) values(?, ?, ?, ?, ?, ?)',ev.requestId, ev.sessionId, ev.sessionvalidtime, ev.customerid, ev.flag, ev.Blockreason);		
+			COMMIT;
+		ELSE
+			SET OutputRoot.JSON.Data.status = 'NET Banking is not Avaliable for the requested details';
+			PROPAGATE TO Terminal 'out4' FINALIZE NONE DELETE NONE;	
+			RETURN FALSE;
+		END IF;	
+			
+		END IF;
+
+		RETURN TRUE;
+	END;	
+END MODULE;

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DEE</name>
+	<name>Net_Mobile_Banking_APIv1.0</name>
 	<comment></comment>
 	<projects>
+		<project>ESBValidationUtils</project>
+		<project>CBSTokenLib</project>
+		<project>commonFrameworkIOB</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

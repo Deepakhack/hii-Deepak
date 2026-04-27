@@ -1,0 +1,70 @@
+BROKER SCHEMA com.esb.iob
+
+
+CREATE COMPUTE MODULE blockmobilebanking_ProcessResponse
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	-- backendresponse logging
+		SET Environment.AuditRecord.BackendResp = CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID 1208 ENCODING 546);
+		SET Environment.ESB.HttpInputHeader = CAST(ASBITSTREAM(InputRoot.HTTPResponseHeader) AS CHARACTER CCSID 1208 ENCODING 546);
+		SET Environment.AuditRecord.Request = '-';
+     	SET Environment.AuditRecord.BackendReq = '-';
+     	SET Environment.AuditRecord.Requestheader = '-';
+		SET Environment.AuditRecord.Responseheader = Environment.ESB.HttpInputHeader;
+		SET Environment.DefaultRecord.Logtype = 'backendresponse';
+		PROPAGATE TO TERMINAL 'out1' FINALIZE NONE DELETE NONE;
+		
+		DECLARE ev REFERENCE TO Environment.variables;
+		DECLARE mychar CHARACTER CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID 1208 ENCODING 546);
+		CREATE LASTCHILD OF ev.backendres  DOMAIN ('XMLNSC') PARSE (mychar CCSID 1208);
+		SET ev.resp= ev.backendres.XMLNSC.env:Envelope.env:Body.web:executeServiceResponse.return;
+		CREATE LASTCHILD OF ev.response DOMAIN ('XMLNSC') PARSE (ev.resp CCSID 1208);
+		SET ev.HeaderStatus    =   ev.response.XMLNSC.NS1:FIXML.NS1:Header.NS1:ResponseHeader.NS1:HostTransaction.NS1:Status;
+		SET ev.bodyStatus    =   ev.response.XMLNSC.NS1:FIXML.NS1:Body.NS1:executeFinacleScriptResponse.NS1:executeFinacleScript_CustomData.NS1:status;
+		IF ev.HeaderStatus = 'SUCCESS'  AND ev.bodyStatus = 'S'  THEN
+		 	SET OutputRoot.JSON.Data.RequestId = ev.requestId;
+			 SET OutputRoot.JSON.Data.SessionId = ev.sessionId;
+			 SET OutputRoot.JSON.Data.Status = 'Status';
+			 SET OutputRoot.JSON.Data.Statuscode = 'ESB-P2-100';
+			 SET OutputRoot.JSON.Data.Description = ev.response.XMLNSC.NS1:FIXML.NS1:Body.NS1:executeFinacleScriptResponse.NS1:executeFinacleScript_CustomData.NS1:remarks;
+		UPDATE Database.SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION AS II SET TRN_STATUS = 'P' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+		COMMIT;
+		ELSEIF ev.HeaderStatus = 'SUCCESS' AND ev.bodyStatus = 'F'  THEN
+			 SET OutputRoot.JSON.Data.RequestId = ev.requestId;
+			 SET OutputRoot.JSON.Data.SessionId = ev.sessionId;
+			 SET OutputRoot.JSON.Data.Status = 'Failure';
+			 SET OutputRoot.JSON.Data.Statuscode = 'ESB-P2-101';
+			 SET OutputRoot.JSON.Data.Description = ev.response.XMLNSC.NS1:FIXML.NS1:Body.NS1:executeFinacleScriptResponse.NS1:executeFinacleScript_CustomData.NS1:errorDescription;
+			UPDATE Database.SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+			COMMIT;
+		ELSE
+			 SET OutputRoot.JSON.Data.RequestId = ev.requestId;
+			 SET OutputRoot.JSON.Data.SessionId = ev.sessionId;
+			 SET OutputRoot.JSON.Data.Status = 'Failure';
+			 SET OutputRoot.JSON.Data.Statuscode = 'ESB-P2-102';
+			 SET OutputRoot.JSON.Data.Description = ev.response.XMLNSC.NS1:FIXML.NS1:Body.NS1:executeFinacleScriptResponse.NS1:executeFinacleScript_CustomData.NS1:errorDescription;
+			UPDATE Database.SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+				COMMIT;		
+							 
+		END IF;
+		
+		
+		--response logging	
+		SET Environment.AuditRecord.TransactionCode = '200';
+		SET Environment.AuditRecord.TransactionStatus = 'Success';
+		SET Environment.AuditRecord.TransactionFlag = 'P';
+		SET Environment.DefaultRecord.Logtype = 'Response';
+		SET Environment.AuditRecord.Request = '-';
+		SET Environment.AuditRecord.BackendReq = '-';
+		SET Environment.AuditRecord.BackendResp = '-';
+		SET Environment.AuditRecord.Requestheader = '-';
+		SET Environment.AuditRecord.Responseheader = '-';
+			DECLARE resblob BLOB ASBITSTREAM(OutputRoot.JSON.Data CCSID 1208 ENCODING 546);
+			SET Environment.AuditRecord.Response = CAST(resblob AS CHARACTER CCSID 1208 ENCODING 546);
+			PROPAGATE TO TERMINAL 'out1' FINALIZE NONE DELETE NONE;
+		
+	
+		
+		RETURN TRUE;
+	END;
+END MODULE;

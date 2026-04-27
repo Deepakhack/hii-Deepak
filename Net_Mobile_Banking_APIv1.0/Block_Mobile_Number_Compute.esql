@@ -1,0 +1,115 @@
+
+
+CREATE COMPUTE MODULE Block_Mobile_Number_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ev REFERENCE TO Environment.variables;
+		SET ev.Format  = InputRoot.HTTPInputHeader."Content-Type";
+		SET OutputLocalEnvironment.Destination.File.Name = 'CBSConfigFile.txt';
+		PROPAGATE TO TERMINAL 'out1' FINALIZE NONE DELETE NONE;
+
+		SET ev.properties = THE (select * from ev.ESBConfig.XMLNSC.ESBConfig.Service.CBS.Interface[] AS R where R.API_NAME = ApplicationLabel);
+
+		-------Audit logging-------
+		SET Environment.ESB.ESBURL = InputRoot.HTTPInputHeader."X-Original-HTTP-Command";
+		SET Environment.ESB.HttpInputHeader = CAST(ASBITSTREAM(InputRoot.HTTPInputHeader) AS CHARACTER CCSID 1208 ENCODING 546);
+		CREATE FIELD Environment.AuditRecord;
+		CREATE FIELD Environment.DefaultRecord;
+		
+		SET Environment.AuditRecord.Request = InputRoot.BLOB.BLOB;
+		SET Environment.DefaultRecord.IntegrationNode = BrokerName;
+		SET Environment.DefaultRecord.IntegrationServer = ExecutionGroupLabel;
+		SET Environment.DefaultRecord.ApplicationName = ApplicationLabel;
+		SET Environment.DefaultRecord.FlowName = MessageFlowLabel;
+		SET Environment.AuditRecord.ESBURL = Environment.ESB.ESBURL;
+		SET Environment.AuditRecord.Loglevel ='Information';
+		SET Environment.AuditRecord.Requestheader = Environment.ESB.HttpInputHeader;
+		SET Environment.DefaultRecord.Logtype='Request';
+		PROPAGATE TO TERMINAL 'out2' FINALIZE NONE DELETE NONE;
+		
+	
+		CREATE LASTCHILD OF ev.otprequest DOMAIN('JSON') PARSE(InputRoot.BLOB.BLOB);
+		SET ev.currenttime = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMddHHmmss');
+		SET ev.customerotp = ev.otprequest.JSON.Data.OTP;
+		SET ev.sessionId   = ev.otprequest.JSON.Data.SessionId;
+		SET ev.requestId   = ev.otprequest.JSON.Data.RequestId;
+		SET ev.hashing     = generateHash(ev.customerotp);
+		SET ev.otpdetails = PASSTHRU('SELECT * from SRV_SESSION.login_table WHERE REQUESTID = ? AND SESSIONID = ?'  TO Database.ORASESSION values(ev.requestId, ev.sessionId));
+		COMMIT;
+	
+		DECLARE DBOTP CHARACTER ev.otpdetails.OTP;
+		DECLARE OTPEXPIRETIME CHARACTER ev.otpdetails.OTPEXPIRETIME;
+		DECLARE SESSIONEXPIRETIME CHARACTER ev.otpdetails.SESSIONEXPIRETIME;
+		DECLARE SESSIONID CHARACTER ev.otpdetails.SESSIONID;
+		
+		IF EXISTS(ev.otpdetails[]) THEN
+			IF ev.sessionId = SESSIONID THEN
+				IF ev.currenttime < SESSIONEXPIRETIME THEN
+					IF  ev.hashing = DBOTP  THEN
+						IF ev.currenttime < OTPEXPIRETIME THEN
+							SET OutputRoot.JSON.Data.response.status = 'SUCCESS';
+							SET OutputRoot.JSON.Data.response.description = 'Valid OTP';
+						IF EXISTS(ev.otpdetails.login_id[])THEN	
+					--	  update Database.ORASESSION.SRV_SESSION.login_table set BLOCK_STATUS = 'Y', Block_reason='CUST_INIT', Blocked_by='API', Blocked_dt=sysdate where login_id = ev.login_id;
+							UPDATE Database.ORASESSION.SRV_SESSION.STOP_PAYMENT_SESSION AS II SET OTP_STATUS = 'S' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+							COMMIT;
+						ELSE 
+						--	update Database.ORASESSION.SRV_SESSION.login_table set BLOCK_STATUS = 'Y', Block_reason='CUST_INIT', Blocked_by='API', Blocked_dt=sysdate where  CUSTOMER_ID = ev.customerid;
+							COMMIT;
+						    PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+						END IF;
+						ELSE
+							SET OutputRoot.JSON.Data.response.status = 'Failure';
+							SET OutputRoot.JSON.Data.response.description = 'OTP session expired';
+							UPDATE Database.ORASESSION.SRV_SESSION.STOP_PAYMENT_SESSION AS II SET OTP_STATUS = 'F' , TRN_STATUS = 'F' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+							COMMIT;
+							PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+						END IF;
+					ELSE
+						SET OutputRoot.JSON.Data.response.status = 'Failure';
+						SET OutputRoot.JSON.Data.response.description = 'In-valid OTP';
+						UPDATE Database.ORASESSION.SRV_SESSION.STOP_PAYMENT_SESSION AS II SET OTP_STATUS = 'F' , TRN_STATUS = 'F' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+						COMMIT;
+						PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+					END IF;
+				ELSE
+					SET OutputRoot.JSON.Data.response.status = 'Failure';
+					SET OutputRoot.JSON.Data.response.description = 'session expired';
+					UPDATE Database.ORASESSION.SRV_SESSION.STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid  AND II.sessionId = ev.sessionId;
+					COMMIT;
+					PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;					
+				END IF;
+			ELSE
+				SET OutputRoot.JSON.Data.response.status = 'Failure';
+				SET OutputRoot.JSON.Data.response.description = 'In-valid SessionId';
+				UPDATE Database.ORASESSION.SRV_SESSION.STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid  AND II.sessionId = ev.sessionId;
+				COMMIT;
+				PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;				
+			END IF;	
+		ELSE
+			SET OutputRoot.JSON.Data.response.status = 'Failure';
+			SET OutputRoot.JSON.Data.response.description = 'Unable to fetch details from DataBase';
+			UPDATE Database.ORASESSION.SRV_SESSION.STOP_PAYMENT_SESSION AS II SET TRN_STATUS = 'F' WHERE II.requestid = ev.requestid  AND II.sessionId = ev.sessionId;
+			COMMIT;
+			PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+		END IF;
+		
+		-----logging backendrequest
+		SET Environment.DefaultRecord.ErrorLogFlag = ev.properties.ERRORLOG;
+		DECLARE backendreqblob BLOB ASBITSTREAM(OutputRoot.XMLNSC CCSID 1208 ENCODING 546);
+		SET Environment.AuditRecord.Response = CAST(backendreqblob AS CHARACTER CCSID 1208 ENCODING 546);
+		SET Environment.AuditRecord.Request = '-';
+		SET Environment.DefaultRecord.Logtype = 'backendrequest';
+		SET Environment.AuditRecord.Requestheader = '-';
+		PROPAGATE TO TERMINAL 'out2' FINALIZE NONE DELETE NONE;	
+			
+		RETURN FALSE;
+	END;
+END MODULE;
+
+
+
+	CREATE PROCEDURE generateHash(IN Data CHAR)
+	RETURNS CHAR
+	LANGUAGE JAVA
+	EXTERNAL NAME "iob.esb.javavalidations.OTPHashing.generateHash";

@@ -1,0 +1,44 @@
+BROKER SCHEMA com.esb.iob
+
+CREATE COMPUTE MODULE netbankingvalidation_HandlingOtp
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+BEGIN
+		DECLARE ev REFERENCE TO Environment.Variables;
+	
+		SET ev.otpdetails = PASSTHRU('SELECT * from SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION WHERE REQUESTID = ? AND SESSIONID = ?' TO Database.ORASESSIONUAT values(ev.requestId, ev.sessionId));
+		COMMIT;
+			SET ev.blockstatus = ev.otpdetails.BLOCKSTATUS;
+		SET ev.blockreason = ev.otpdetails.BLOCKREASON;
+		IF ev.userdetails.FIELD_NAME = 'OTP' and ev.userdetails.FIELD_VALUE = 'Y' THEN
+--			 SET OutputRoot.JSON.Data.RequestId = ev.requestId;
+--			 SET OutputRoot.JSON.Data.SessionId = ev.sessionId;
+--			 SET OutputRoot.JSON.Data.Status = 'Status';
+--			 SET OutputRoot.JSON.Data.Statuscode = 'ESB-P2-100';
+--			 SET OutputRoot.JSON.Data.Description = 'Account Validation Success - Valid Account';   
+--		UPDATE Database.SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION AS II SET TRN_STATUS = 'P', OTP_STATUS = 'S' WHERE II.requestid = ev.requestId  AND II.sessionid = ev.sessionId;
+--		COMMIT;
+         IF EXISTS(ev.otpdetails.LOGINID[]) THEN
+				update Database.NETBANKING.NETIOB.login_table AS II set BLOCK_STATUS = ev.blockstatus, Block_reason = ev.blockreason, Blocked_by = 'API', Blocked_dt = CURRENT_TIMESTAMP where II.login_id = ev.login;
+				COMMIT;
+			ELSE
+				update Database.NETBANKING.NETIOB.login_table AS II set BLOCK_STATUS = ev.blockstatus, Block_reason = ev.blockreason, Blocked_by = 'API', Blocked_dt = CURRENT_TIMESTAMP where II.login_id = ev.customerid;
+				COMMIT;
+			END IF;
+			IF ev.blockstatus = 'B' THEN
+				SET OutputRoot.JSON.Data.status = 'SUCCESS';
+				SET OutputRoot.JSON.Data.description = 'NET Banking is blocked';
+			ELSEIF ev.blockstatus = 'U' THEN
+				SET OutputRoot.JSON.Data.status = 'SUCCESS';
+				SET OutputRoot.JSON.Data.description = 'NET Banking is Un-blocked';
+			END IF;
+
+			UPDATE Database.ORASESSIONUAT.SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION AS II SET OTP_STATUS = 'S' WHERE II.requestid = ev.requestId AND II.sessionid = ev.sessionId;
+			COMMIT;
+         
+		PROPAGATE TO TERMINAL 'out1' FINALIZE NONE DELETE NONE;
+		ELSE
+			PROPAGATE TO TERMINAL 'out' FINALIZE NONE DELETE NONE;
+		END IF;
+		RETURN FALSE;
+	END;
+END MODULE;

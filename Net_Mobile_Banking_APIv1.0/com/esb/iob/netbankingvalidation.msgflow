@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:CBSTokenLib_CBSGetToken.subflow="CBSTokenLib/CBSGetToken.subflow" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmWSInput.msgnode="ComIbmWSInput.msgnode" xmlns:ComIbmWSReply.msgnode="ComIbmWSReply.msgnode" xmlns:ESBValidationUtils_InquiryCIFValidation.subflow="ESBValidationUtils/InquiryCIFValidation.subflow" xmlns:ESBValidationUtils_MobileNumbervalidation.subflow="ESBValidationUtils/MobileNumbervalidation.subflow"
+    xmlns:com_ibm_commonFrameWork_configfile.subflow="com/ibm/commonFrameWork/configfile.subflow" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="com/esb/iob/netbankingvalidation.msgflow" nsPrefix="com_esb_iob_netbankingvalidation.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1" nodeLayoutStyle="RECTANGLE">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="netbankingvalidation" bundleName="com/esb/iob/netbankingvalidation" pluginId="Net_Mobile_Banking_APIv1.0"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/Net_Mobile_Banking_APIv1.0/icons/full/obj16/netbankingvalidation.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/Net_Mobile_Banking_APIv1.0/icons/full/obj30/netbankingvalidation.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="209,15" dataSource="ORASESSIONUAT" computeExpression="esql://routine/com.esb.iob#netbankingvalidation_ProcessRequest.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="ProcessRequest"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="10,15" URLSpecifier="/netbanking/v1" useHTTPS="true">
+        <translation xmi:type="utility:ConstantString" string="HTTP Input"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="1259,303">
+        <translation xmi:type="utility:ConstantString" string="HTTP Reply"/>
+      </nodes>
+      <nodes xmi:type="ESBValidationUtils_InquiryCIFValidation.subflow:FCMComposite_1" xmi:id="FCMComposite_1_2" location="419,15">
+        <translation xmi:type="utility:ConstantString" string="InquiryCIFValidation"/>
+      </nodes>
+      <nodes xmi:type="ESBValidationUtils_MobileNumbervalidation.subflow:FCMComposite_1" xmi:id="FCMComposite_1_4" location="839,15">
+        <translation xmi:type="utility:ConstantString" string="MobileNumbervalidation"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="1049,87" dataSource="ORASESSIONUAT" computeExpression="esql://routine/com.esb.iob#netbankingvalidation_ProcessResponse.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="ProcessResponse"/>
+      </nodes>
+      <nodes xmi:type="CBSTokenLib_CBSGetToken.subflow:FCMComposite_1" xmi:id="FCMComposite_1_6" location="424,231">
+        <translation xmi:type="utility:ConstantString" string="CBSGetToken"/>
+      </nodes>
+      <nodes xmi:type="com_ibm_commonFrameWork_configfile.subflow:FCMComposite_1" xmi:id="FCMComposite_1_8" location="424,159">
+        <translation xmi:type="utility:ConstantString" string="configfile"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out4" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.Output2" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.Output2" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.Output1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.Output1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out3" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.Input"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

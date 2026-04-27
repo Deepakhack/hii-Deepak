@@ -1,0 +1,36 @@
+BROKER SCHEMA com.esb.iob
+
+
+CREATE COMPUTE MODULE mobilebanking_ProcessRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ev REFERENCE TO Environment.variables;	
+		SET ev.clientid = InputRoot.HTTPInputHeader.Clientid;
+		SET ev.Format = InputRoot.HTTPInputHeader."Content-Type";
+		SET ev.APINAME = ApplicationLabel;
+		SET OutputLocalEnvironment.Destination.File.Name = 'ReadConfigFile.txt';
+		PROPAGATE TO TERMINAL 'out1' FINALIZE NONE DELETE NONE;
+		SET ev.userdetails = PASSTHRU('SELECT FIELD_VALUE from SRV_FRMWRK.UAT_USER_DATA_IMPLICITMAP WHERE API_NAME=? AND IOB_CLIENT_ID=? AND FIELD_NAME = ? ' TO Database.ORASECFWUAT values(ev.APINAME, ev.clientid, 'OTP'));
+		IF ev.userdetails.FIELD_VALUE = 'Y' THEN
+			SET OutputRoot.JSON.Data.status = 'Success';
+			SET OutputRoot.JSON.Data.Description = 'OTP Validation is not requeired';
+			PROPAGATE TO Terminal 'out4' FINALIZE NONE DELETE NONE;
+		ELSE
+	    SET ev.userdetails = PASSTHRU('SELECT * from SRV_FRMWRK.UAT_USER_DATA_IMPLICITMAP WHERE API_NAME=? AND IOB_CLIENT_ID=?' TO Database.ORASECFWUAT values(ev.APINAME, ev.clientid));
+		SET ev.properties = THE (SELECT * from ev.ESBConfig.XMLNSC.ESBConfig.Service.Interface[] AS R WHERE R.API_NAME = ApplicationLabel);		
+
+		CREATE LASTCHILD OF ev.PrimaryReq DOMAIN('JSON') PARSE(InputRoot.BLOB.BLOB);
+		SET ev.tablename = 'UAT_NET_MOBILE_BANKING_SESSION';
+		SET ev.mobilenumber = ev.PrimaryReq.JSON.Data.MobileNumber;
+		SET ev.requestId = ev.PrimaryReq.JSON.Data.RequestId;
+		SET ev.flag=ev.PrimaryReq.JSON.Data.Flag;
+		SET ev.Blockreason = ev.PrimaryReq.JSON.Data.BlockReason;
+		SET ev.ChannelId = ev.PrimaryReq.JSON.Data.ChannelId;
+		SET ev.sessionId = REPLACE(UUIDASCHAR,'-','');
+		SET ev.sessionvalidtime = CAST(CURRENT_TIMESTAMP + CAST(10 AS INTERVAL MINUTE) AS CHARACTER FORMAT 'yyyyMMddHHmmss');
+		PASSTHRU('Insert into SRV_SESSION.UAT_NET_MOBILE_BANKING_SESSION(REQUESTID, SESSIONID, SESSIONEXPIRETIME, MOBILENUMBER, BLOCKSTATUS, BLOCKREASON,CHANNELID) values(?, ?, ?, ?, ?,?, ?)',ev.requestId, ev.sessionId, ev.sessionvalidtime, ev.mobilenumber, ev.flag, ev.Blockreason,ev.ChannelId);		
+		COMMIT;
+		END IF;
+		RETURN TRUE;
+	END;
+END MODULE;

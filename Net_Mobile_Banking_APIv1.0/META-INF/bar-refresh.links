@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy:Deploy xmlns:deploy="http://www.ibm.com/xmlns/prod/wmb/deploy/6.0.0" overrideConfigurableProperties="false" includeESQL="false">
+  <deployables>
+    <deployable deployed="true" barResourceTimeStamp="1688208733797" workspaceResource="/Net_Mobile_Banking_APIv1.0/Block_Mobile_Number_Compute.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Block_Mobile_Number_Compute.esql.&#xA;Dependent ESQL file ESBValidationUtils/MobileNumbervalidation_ProcessResponse.esql is added to the BAR file.&#xA;&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Block_Mobile_Number_Compute.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Block_Mobile_Number_Compute.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688115016000" workspaceResource="/Net_Mobile_Banking_APIv1.0/Block_NetBanking.msgflow">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Block_NetBanking.msgflow.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Block_NetBanking.msgflow to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Block_NetBanking.msgflow"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688384258211" workspaceResource="/Net_Mobile_Banking_APIv1.0/Mobile_Banking.msgflow">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Mobile_Banking.msgflow.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking.msgflow to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Mobile_Banking.msgflow"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688115016000" workspaceResource="/Net_Mobile_Banking_APIv1.0/Mobile_Banking_Compute1.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Compute1.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Compute1.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Mobile_Banking_Compute1.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688115016000" workspaceResource="/Net_Mobile_Banking_APIv1.0/Mobile_Banking_Compute2.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Compute2.esql.&#xA;Dependent ESQL file Mobile_validation_Compute.esql is added to the BAR file.&#xA;&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Compute2.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Mobile_Banking_Compute2.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688115016000" workspaceResource="/Net_Mobile_Banking_APIv1.0/Mobile_Banking_Mainflow_Compute.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Mainflow_Compute.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_Banking_Mainflow_Compute.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Mobile_Banking_Mainflow_Compute.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688365413611" workspaceResource="/Net_Mobile_Banking_APIv1.0/Mobile_validation_Compute.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Mobile_validation_Compute.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_validation_Compute.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Mobile_validation_Compute.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688115016000" workspaceResource="/Net_Mobile_Banking_APIv1.0/Mobile_validation_Compute1.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\Mobile_validation_Compute1.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\Mobile_validation_Compute1.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="Mobile_validation_Compute1.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688365438104" workspaceResource="/Net_Mobile_Banking_APIv1.0/NetBanking_Validation.msgflow">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\NetBanking_Validation.msgflow.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\NetBanking_Validation.msgflow to BAR file.&#xA;" severity="0"/>
+      <barEntry name="NetBanking_Validation.msgflow"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688365082233" workspaceResource="/Net_Mobile_Banking_APIv1.0/application.descriptor">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\application.descriptor.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\application.descriptor to BAR file.&#xA;Elapsed time: 0 second(s).&#xA;&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\application.descriptor to BAR file.&#xA;" severity="0"/>
+      <barEntry name="application.descriptor"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688393636757" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/blockmobilebanking.msgflow">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking.msgflow.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking.msgflow to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\blockmobilebanking.msgflow"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688394540726" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/blockmobilebanking_ProcessRequest.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessRequest.esql.&#xA;Dependent ESQL file com/esb/iob/netbankingvalidation_ProcessRequest.esql is added to the BAR file.&#xA;&#xA;Dependent ESQL file Block_Mobile_Number_Compute.esql is added to the BAR file.&#xA;&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessRequest.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\blockmobilebanking_ProcessRequest.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688387192159" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/blockmobilebanking_ProcessResponse.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessResponse.esql.&#xA;Dependent ESQL file com/esb/iob/netbankingvalidation_ProcessRequest.esql is added to the BAR file.&#xA;&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blockmobilebanking_ProcessResponse.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\blockmobilebanking_ProcessResponse.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688375199803" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/blocknetbanking.msgflow">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\blocknetbanking.msgflow.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blocknetbanking.msgflow to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\blocknetbanking.msgflow"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688383192977" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/blocknetbanking_ProcessRequest.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\blocknetbanking_ProcessRequest.esql.&#xA;Dependent ESQL file Block_Mobile_Number_Compute.esql is added to the BAR file.&#xA;&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\blocknetbanking_ProcessRequest.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\blocknetbanking_ProcessRequest.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688385881414" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/mobilebanking_ProcessRequest.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebanking_ProcessRequest.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebanking_ProcessRequest.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\mobilebanking_ProcessRequest.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688386041497" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/mobilebanking_ProcessResponse.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebanking_ProcessResponse.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebanking_ProcessResponse.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\mobilebanking_ProcessResponse.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688385684126" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/mobilebankingvalidation.msgflow">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebankingvalidation.msgflow.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\mobilebankingvalidation.msgflow to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\mobilebankingvalidation.msgflow"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688382644765" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/netbankingvalidation.msgflow">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation.msgflow.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation.msgflow to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\netbankingvalidation.msgflow"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688385588736" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/netbankingvalidation_ProcessRequest.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation_ProcessRequest.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation_ProcessRequest.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\netbankingvalidation_ProcessRequest.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1688368724509" workspaceResource="/Net_Mobile_Banking_APIv1.0/com/esb/iob/netbankingvalidation_ProcessResponse.esql">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation_ProcessResponse.esql.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\com\esb\iob\netbankingvalidation_ProcessResponse.esql to BAR file.&#xA;" severity="0"/>
+      <barEntry name="com\esb\iob\netbankingvalidation_ProcessResponse.esql"/>
+    </deployable>
+    <deployable deployed="true" barResourceTimeStamp="1686900508000" workspaceResource="/Net_Mobile_Banking_APIv1.0/otphashing.jar">
+      <deployableStatus code="0" key="DEPLOYABLE_LAST_COMPILE_STATUS" message="&#xA;Processing file Net_Mobile_Banking_APIv1.0\otphashing.jar.&#xA;Successfully added file Net_Mobile_Banking_APIv1.0\otphashing.jar to BAR file.&#xA;Elapsed time: 0 second(s).&#xA;" severity="0"/>
+      <barEntry name="otphashing.jar"/>
+    </deployable>
+  </deployables>
+</deploy:Deploy>

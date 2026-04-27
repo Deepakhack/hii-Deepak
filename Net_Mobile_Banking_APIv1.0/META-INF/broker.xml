@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?><Broker>
+<CompiledApplication>
+<ConfigurableProperty uri="startMode"/>
+</CompiledApplication>
+<CompiledMessageFlow name="com.esb.iob.blocknetbanking">
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#additionalInstances"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#notificationThresholdMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#maximumRateMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#processingTimeoutSec"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#processingTimeoutAction"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#wlmPolicy"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#commitCount"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#commitInterval"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#coordinatedTransaction"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#consumerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#providerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#consumerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#providerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#securityProfileName"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#monitoringProfile"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#startMode"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#startInstancesWhenFlowStarts"/>
+<ConfigurableProperty override="/blocknetbanking/v1" uri="com.esb.iob.blocknetbanking#HTTP Input.URLSpecifier"/>
+<ConfigurableProperty override="yes" uri="com.esb.iob.blocknetbanking#HTTP Input.useHTTPS"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#HTTP Input.decompressInputMessage"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#HTTP Input.timeoutForClient"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#HTTP Input.faultFormat"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#HTTP Input.validateMaster"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#HTTP Input.securityProfileName"/>
+<ConfigurableProperty override="ORASESSION" uri="com.esb.iob.blocknetbanking#ProcessRequest.dataSource"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#ProcessRequest.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#ProcessRequest.validateMaster"/>
+<ConfigurableProperty uri="com.esb.iob.blocknetbanking#HTTP Reply.validateMaster"/>
+</CompiledMessageFlow>
+<CompiledMessageFlow name="com.esb.iob.mobilebankingvalidation">
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#additionalInstances"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#notificationThresholdMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#maximumRateMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#processingTimeoutSec"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#processingTimeoutAction"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#wlmPolicy"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#commitCount"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#commitInterval"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#coordinatedTransaction"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#consumerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#providerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#consumerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#providerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#securityProfileName"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#monitoringProfile"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#startMode"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#startInstancesWhenFlowStarts"/>
+<ConfigurableProperty override="ORASESSION" uri="com.esb.iob.mobilebankingvalidation#ProcessRequest.dataSource"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#ProcessRequest.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#ProcessRequest.validateMaster"/>
+<ConfigurableProperty override="/cbs/mobilebanking/v1" uri="com.esb.iob.mobilebankingvalidation#HTTP Input.URLSpecifier"/>
+<ConfigurableProperty override="yes" uri="com.esb.iob.mobilebankingvalidation#HTTP Input.useHTTPS"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#HTTP Input.decompressInputMessage"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#HTTP Input.timeoutForClient"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#HTTP Input.faultFormat"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#HTTP Input.validateMaster"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#HTTP Input.securityProfileName"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#HTTP Reply.validateMaster"/>
+<ConfigurableProperty override="ORASESSION" uri="com.esb.iob.mobilebankingvalidation#ProcessResponse.dataSource"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#ProcessResponse.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="com.esb.iob.mobilebankingvalidation#ProcessResponse.validateMaster"/>
+</CompiledMessageFlow>
+<CompiledMessageFlow name="com.esb.iob.netbankingvalidation">
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#additionalInstances"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#notificationThresholdMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#maximumRateMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#processingTimeoutSec"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#processingTimeoutAction"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#wlmPolicy"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#commitCount"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#commitInterval"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#coordinatedTransaction"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#consumerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#providerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#consumerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#providerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#securityProfileName"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#monitoringProfile"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#startMode"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#startInstancesWhenFlowStarts"/>
+<ConfigurableProperty override="ORASESSION" uri="com.esb.iob.netbankingvalidation#ProcessRequest.dataSource"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#ProcessRequest.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#ProcessRequest.validateMaster"/>
+<ConfigurableProperty override="/netbanking/v1" uri="com.esb.iob.netbankingvalidation#HTTP Input.URLSpecifier"/>
+<ConfigurableProperty override="yes" uri="com.esb.iob.netbankingvalidation#HTTP Input.useHTTPS"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#HTTP Input.decompressInputMessage"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#HTTP Input.timeoutForClient"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#HTTP Input.faultFormat"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#HTTP Input.validateMaster"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#HTTP Input.securityProfileName"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#HTTP Reply.validateMaster"/>
+<ConfigurableProperty override="ORASESSION" uri="com.esb.iob.netbankingvalidation#ProcessResponse.dataSource"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#ProcessResponse.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="com.esb.iob.netbankingvalidation#ProcessResponse.validateMaster"/>
+</CompiledMessageFlow>
+<CompiledMessageFlow name="com.esb.iob.blockmobilebanking">
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#additionalInstances"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#notificationThresholdMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#maximumRateMsgsPerSec"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#processingTimeoutSec"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#processingTimeoutAction"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#wlmPolicy"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#commitCount"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#commitInterval"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#coordinatedTransaction"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#consumerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#providerPolicySet"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#consumerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#providerPolicySetBindings"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#securityProfileName"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#monitoringProfile"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#startMode"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#startInstancesWhenFlowStarts"/>
+<ConfigurableProperty override="/cbs/blockmobilebanking/v1" uri="com.esb.iob.blockmobilebanking#HTTP Input.URLSpecifier"/>
+<ConfigurableProperty override="yes" uri="com.esb.iob.blockmobilebanking#HTTP Input.useHTTPS"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Input.decompressInputMessage"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Input.timeoutForClient"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Input.faultFormat"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Input.validateMaster"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Input.securityProfileName"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Reply.validateMaster"/>
+<ConfigurableProperty override="https://localhost:7800/test1" uri="com.esb.iob.blockmobilebanking#HTTP Request.URLSpecifier"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.timeoutForServer"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.httpProxyLocation"/>
+<ConfigurableProperty override="1.1" uri="com.esb.iob.blockmobilebanking#HTTP Request.httpVersion"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.enableKeepAlive"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.requestCompressionType"/>
+<ConfigurableProperty override="TLS" uri="com.esb.iob.blockmobilebanking#HTTP Request.protocol"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.allowedCiphers"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.hostnameChecking"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.keyAlias"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.enableCRLCheck"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.acceptCompressedResponses"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.validateMaster"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#HTTP Request.securityProfileName"/>
+<ConfigurableProperty override="ORASESSION" uri="com.esb.iob.blockmobilebanking#ProcessRequest.dataSource"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#ProcessRequest.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#ProcessRequest.validateMaster"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#ProcessResponse.dataSource"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#ProcessResponse.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="com.esb.iob.blockmobilebanking#ProcessResponse.validateMaster"/>
+</CompiledMessageFlow>
+<CompiledMessageFlow name="NetBanking_Validation">
+<ConfigurableProperty uri="NetBanking_Validation#additionalInstances"/>
+<ConfigurableProperty uri="NetBanking_Validation#notificationThresholdMsgsPerSec"/>
+<ConfigurableProperty uri="NetBanking_Validation#maximumRateMsgsPerSec"/>
+<ConfigurableProperty uri="NetBanking_Validation#processingTimeoutSec"/>
+<ConfigurableProperty uri="NetBanking_Validation#processingTimeoutAction"/>
+<ConfigurableProperty uri="NetBanking_Validation#wlmPolicy"/>
+<ConfigurableProperty uri="NetBanking_Validation#commitCount"/>
+<ConfigurableProperty uri="NetBanking_Validation#commitInterval"/>
+<ConfigurableProperty uri="NetBanking_Validation#coordinatedTransaction"/>
+<ConfigurableProperty uri="NetBanking_Validation#consumerPolicySet"/>
+<ConfigurableProperty uri="NetBanking_Validation#providerPolicySet"/>
+<ConfigurableProperty uri="NetBanking_Validation#consumerPolicySetBindings"/>
+<ConfigurableProperty uri="NetBanking_Validation#providerPolicySetBindings"/>
+<ConfigurableProperty uri="NetBanking_Validation#securityProfileName"/>
+<ConfigurableProperty uri="NetBanking_Validation#monitoringProfile"/>
+<ConfigurableProperty uri="NetBanking_Validation#startMode"/>
+<ConfigurableProperty uri="NetBanking_Validation#startInstancesWhenFlowStarts"/>
+<ConfigurableProperty override="/mobilevalidation" uri="NetBanking_Validation#HTTP Input.URLSpecifier"/>
+<ConfigurableProperty uri="NetBanking_Validation#HTTP Input.useHTTPS"/>
+<ConfigurableProperty uri="NetBanking_Validation#HTTP Input.decompressInputMessage"/>
+<ConfigurableProperty uri="NetBanking_Validation#HTTP Input.timeoutForClient"/>
+<ConfigurableProperty uri="NetBanking_Validation#HTTP Input.faultFormat"/>
+<ConfigurableProperty uri="NetBanking_Validation#HTTP Input.validateMaster"/>
+<ConfigurableProperty uri="NetBanking_Validation#HTTP Input.securityProfileName"/>
+<ConfigurableProperty override="ORASESSION" uri="NetBanking_Validation#Compute.dataSource"/>
+<ConfigurableProperty uri="NetBanking_Validation#Compute.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="NetBanking_Validation#Compute.validateMaster"/>
+<ConfigurableProperty override="ORASESSION" uri="NetBanking_Validation#Compute1.dataSource"/>
+<ConfigurableProperty uri="NetBanking_Validation#Compute1.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="NetBanking_Validation#Compute1.validateMaster"/>
+<ConfigurableProperty uri="NetBanking_Validation#HTTP Reply.validateMaster"/>
+</CompiledMessageFlow>
+<CompiledMessageFlow name="Block_NetBanking">
+<ConfigurableProperty uri="Block_NetBanking#additionalInstances"/>
+<ConfigurableProperty uri="Block_NetBanking#notificationThresholdMsgsPerSec"/>
+<ConfigurableProperty uri="Block_NetBanking#maximumRateMsgsPerSec"/>
+<ConfigurableProperty uri="Block_NetBanking#processingTimeoutSec"/>
+<ConfigurableProperty uri="Block_NetBanking#processingTimeoutAction"/>
+<ConfigurableProperty uri="Block_NetBanking#wlmPolicy"/>
+<ConfigurableProperty uri="Block_NetBanking#commitCount"/>
+<ConfigurableProperty uri="Block_NetBanking#commitInterval"/>
+<ConfigurableProperty uri="Block_NetBanking#coordinatedTransaction"/>
+<ConfigurableProperty uri="Block_NetBanking#consumerPolicySet"/>
+<ConfigurableProperty uri="Block_NetBanking#providerPolicySet"/>
+<ConfigurableProperty uri="Block_NetBanking#consumerPolicySetBindings"/>
+<ConfigurableProperty uri="Block_NetBanking#providerPolicySetBindings"/>
+<ConfigurableProperty uri="Block_NetBanking#securityProfileName"/>
+<ConfigurableProperty uri="Block_NetBanking#monitoringProfile"/>
+<ConfigurableProperty uri="Block_NetBanking#startMode"/>
+<ConfigurableProperty uri="Block_NetBanking#startInstancesWhenFlowStarts"/>
+<ConfigurableProperty override="/Block_Mobile_Number" uri="Block_NetBanking#HTTP Input.URLSpecifier"/>
+<ConfigurableProperty uri="Block_NetBanking#HTTP Input.useHTTPS"/>
+<ConfigurableProperty uri="Block_NetBanking#HTTP Input.decompressInputMessage"/>
+<ConfigurableProperty uri="Block_NetBanking#HTTP Input.timeoutForClient"/>
+<ConfigurableProperty uri="Block_NetBanking#HTTP Input.faultFormat"/>
+<ConfigurableProperty uri="Block_NetBanking#HTTP Input.validateMaster"/>
+<ConfigurableProperty uri="Block_NetBanking#HTTP Input.securityProfileName"/>
+<ConfigurableProperty override="ORASESSION" uri="Block_NetBanking#Compute.dataSource"/>
+<ConfigurableProperty uri="Block_NetBanking#Compute.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="Block_NetBanking#Compute.validateMaster"/>
+<ConfigurableProperty uri="Block_NetBanking#HTTP Reply.validateMaster"/>
+</CompiledMessageFlow>
+<CompiledMessageFlow name="Mobile_Banking">
+<ConfigurableProperty uri="Mobile_Banking#additionalInstances"/>
+<ConfigurableProperty uri="Mobile_Banking#notificationThresholdMsgsPerSec"/>
+<ConfigurableProperty uri="Mobile_Banking#maximumRateMsgsPerSec"/>
+<ConfigurableProperty uri="Mobile_Banking#processingTimeoutSec"/>
+<ConfigurableProperty uri="Mobile_Banking#processingTimeoutAction"/>
+<ConfigurableProperty uri="Mobile_Banking#wlmPolicy"/>
+<ConfigurableProperty uri="Mobile_Banking#commitCount"/>
+<ConfigurableProperty uri="Mobile_Banking#commitInterval"/>
+<ConfigurableProperty uri="Mobile_Banking#coordinatedTransaction"/>
+<ConfigurableProperty uri="Mobile_Banking#consumerPolicySet"/>
+<ConfigurableProperty uri="Mobile_Banking#providerPolicySet"/>
+<ConfigurableProperty uri="Mobile_Banking#consumerPolicySetBindings"/>
+<ConfigurableProperty uri="Mobile_Banking#providerPolicySetBindings"/>
+<ConfigurableProperty uri="Mobile_Banking#securityProfileName"/>
+<ConfigurableProperty uri="Mobile_Banking#monitoringProfile"/>
+<ConfigurableProperty uri="Mobile_Banking#startMode"/>
+<ConfigurableProperty uri="Mobile_Banking#startInstancesWhenFlowStarts"/>
+<ConfigurableProperty override="/Mobile_Banking" uri="Mobile_Banking#HTTP Input.URLSpecifier"/>
+<ConfigurableProperty uri="Mobile_Banking#HTTP Input.useHTTPS"/>
+<ConfigurableProperty uri="Mobile_Banking#HTTP Input.decompressInputMessage"/>
+<ConfigurableProperty uri="Mobile_Banking#HTTP Input.timeoutForClient"/>
+<ConfigurableProperty uri="Mobile_Banking#HTTP Input.faultFormat"/>
+<ConfigurableProperty uri="Mobile_Banking#HTTP Input.validateMaster"/>
+<ConfigurableProperty uri="Mobile_Banking#HTTP Input.securityProfileName"/>
+<ConfigurableProperty override="ORASESSION" uri="Mobile_Banking#Compute.dataSource"/>
+<ConfigurableProperty uri="Mobile_Banking#Compute.connectDatasourceBeforeFlowStarts"/>
+<ConfigurableProperty uri="Mobile_Banking#Compute.validateMaster"/>
+<ConfigurableProperty uri="Mobile_Banking#HTTP Reply.validateMaster"/>
+</CompiledMessageFlow>
+</Broker>
