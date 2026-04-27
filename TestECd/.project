@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>GIT_UUU</name>
+	<name>TestECd</name>
 	<comment></comment>
 	<projects>
+		<project>APIMangerLib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
