@@ -1,0 +1,14 @@
+
+
+Importing file: C:\Users\DELL\IBM\ACET12\workspace\testing\testing.wsdl
+
+The WSDL import will proceed with bindings testingHttpBinding.
+Creating wsdl schema document for file:///C:/Users/DELL/IBM/ACET12/workspace/testing/testing.wsdl.
+Parsing wsdl binding {http://testing}testingHttpBinding.
+Parsing wsdl binding input operation1.
+Parsing wsdl binding output operation1.
+Processing doc style for operation operation1.
+Populating WSDL schema testing.xsd.
+Creating file testing.xsd in the workspace.
+Creating file testing_InlineSchema1.xsd in the workspace.
+Copying source WSDL testing.wsdl to testing.wsdl.
