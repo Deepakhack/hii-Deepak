@@ -1,0 +1,60 @@
+
+
+CREATE COMPUTE MODULE TEST_CSV_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- Parse BLOB using DFDL
+		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
+		PARSE(InputRoot.BLOB.BLOB
+		ENCODING 546
+		CCSID 1208
+		SET 'CSV_TEST'
+		TYPE 'CSVFile'
+		FORMAT 'DFDL_FOR_CSV');
+		-- Newline
+		DECLARE CR CHARACTER CAST(X'0D' AS CHARACTER CCSID 1208);
+		DECLARE LF CHARACTER CAST(X'0A' AS CHARACTER CCSID 1208);
+		DECLARE CRLF CHARACTER '';
+		SET CRLF = CR || LF;
+		-- Read header fields from parsed DFDL tree
+		DECLARE hCol1 CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Header.Col1);
+		DECLARE hCol2 CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Header.Col2);
+		DECLARE hCol3 CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Header.Col3);
+		DECLARE hCol4 CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Header.Col4);
+		-- Build output CSV
+		DECLARE outputCSV CHARACTER '';
+		SET outputCSV = hCol1 || ',' || hCol2 || ','
+		|| hCol3 || ',' || hCol4 || CRLF;
+		-- Loop through records
+		DECLARE i INTEGER 1;
+		DECLARE totalRec INTEGER
+		CARDINALITY(OutputRoot.DFDL.CSVFile.Record[]);
+
+		WHILE i <= totalRec DO
+			DECLARE recID CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Record[i].ID);
+			DECLARE recUser CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Record[i].USERNAME);
+			DECLARE recAcc CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Record[i].ACCNUM);
+			DECLARE recBal CHARACTER FIELDVALUE(OutputRoot.DFDL.CSVFile.Record[i].BALANCEAMOUNT);
+
+			SET outputCSV = outputCSV
+			|| recID || ','
+			|| recUser || ','
+			|| recAcc || ','
+			|| recBal || CRLF;
+
+			SET i = i + 1;
+		END WHILE;
+		-- Clear OutputRoot before setting reply
+		DELETE FIELD OutputRoot.*;
+		-- *** CORRECT WAY per IBM docs ***
+		SET OutputRoot.HTTPReplyHeader."Content-Type"
+		= 'text/csv; charset=UTF-8';
+		SET OutputRoot.HTTPReplyHeader."Content-Disposition"
+		= 'attachment; filename="output.csv"';
+		-- Set BLOB output
+		SET OutputRoot.BLOB.BLOB =
+		CAST(outputCSV AS BLOB CCSID 1208);
+
+		RETURN TRUE;
+	END;
+END MODULE;

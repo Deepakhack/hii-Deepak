@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns:csv="http://www.ibm.com/dfdl/CommaSeparatedFormat" 
+            xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" 
+            xmlns:fn="http://www.w3.org/2005/xpath-functions" 
+            xmlns:ibmDfdlExtn="http://www.ibm.com/dfdl/extensions" 
+            xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+
+    <!-- Import IBM's built-in CSV format -->
+    <xsd:import namespace="http://www.ibm.com/dfdl/CommaSeparatedFormat" 
+                schemaLocation="IBMdefined/CommaSeparatedFormat.xsd"/>
+
+    <!-- Use IBM's format + escape scheme -->
+    <xsd:annotation>
+        <xsd:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:format 
+                documentFinalTerminatorCanBeMissing="yes" 
+                encoding="{$dfdl:encoding}" 
+                escapeSchemeRef="csv:CSVEscapeScheme" 
+                ref="csv:CommaSeparatedFormat"/>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <!-- Root element: CSVFile -->
+    <xsd:element ibmSchExtn:docRoot="true" name="CSVFile">
+        <xsd:complexType>
+            <xsd:sequence dfdl:separator="">
+
+                <!-- Header row (first row) -->
+                <xsd:element name="Header" 
+                             dfdl:occursCountKind="implicit"
+                             dfdl:terminator="%CR;%LF;%WSP*;" 
+                             maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:sequence dfdl:separatorSuppressionPolicy="trailingEmpty">
+                            <xsd:element name="Col1" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="ID"/>
+                            <xsd:element name="Col2" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="USERNAME"/>
+                            <xsd:element name="Col3" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="ACC NUM"/>
+                            <xsd:element name="Col4" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="BALANCE AMOUNT"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+
+                <!-- Data rows (repeating) -->
+                <xsd:element name="Record" 
+                             dfdl:occursCountKind="implicit" 
+                             dfdl:terminator="%CR;%LF;%WSP*;" 
+                             maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence dfdl:separatorSuppressionPolicy="trailingEmpty">
+                            <xsd:element name="ID" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="1001"/>
+                            <xsd:element name="USERNAME" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="Priya Ramesh"/>
+                            <xsd:element name="ACCNUM" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="ACC987654"/>
+                            <xsd:element name="BALANCEAMOUNT" type="xsd:string" 
+                                         ibmDfdlExtn:sampleValue="25000.50"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
